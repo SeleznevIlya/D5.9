@@ -1,0 +1,40 @@
+>>> from django.db.models import Sum
+>>> from LearnModels.models import Author, Category, Post, Comment
+>>> from django.contrib.auth.models import User
+
+#создаём пользователей
+>>> User.objects.create_user('User1')
+>>> User.objects.create_user('User2')
+
+Присваиваем авторов пользователям
+>>> a = User.objects.get(username = 'User1')
+>>> Author.objects.create(id_user = a.id)
+>>> Author.objects.get(id=1).id_user_id
+>>> Author.objects.create(id_user = 3)
+
+Создаём посты
+>>> b = Author.objects.get(id = a.id)
+>>> Post.objects.create(author_id = 2,
+                        type_of_post = 'article',
+                        header = 'Тото Вольфф: «Я пропущу некоторые Гран-при в 2023 году. 24 гонки – неподъемно для любого человека»',
+                        )
+>> Post.objects.create(author_id = 2,
+                        type_of_post = 'news',
+                        header = '«Здесь удивляют три вещи» В России выступают десятки иностранных спортсменов. Что их поражает и шокирует в нашей стране?',
+                        )
+>> Post.objects.create(author_id = 1,
+                        type_of_post = 'article',
+                        header = 'Депутат Госдумы Валерий Рашкин приговорен к трем годам условно за то что гладил лося',
+                        )
+
+Присваиваем постам категории
+>>> cat1 = Category.objects.get(id = 2)
+>>> post1 = Post.objects.get(id = 1)
+>>> post1.category.add(cat1)
+>>> post1.category.add(Category.objects.get(id = 1))
+(Так быстрее чем создавать много переменных, но менее читаемо, лучше пользуйся методом выше)
+>>> Post.objects.get(id = 2).category.add(Category.objects.get(id = 2))
+>>> Post.objects.get(id = 2).category.add(Category.objects.get(id = 3))
+>>> Post.objects.get(id = 3).category.add(Category.objects.get(id = 4))
+>>> Post.objects.get(id = 3).category.add(Category.objects.get(id = 3))
+

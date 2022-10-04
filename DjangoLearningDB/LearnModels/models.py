@@ -1,16 +1,17 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models import Sum
 
 
 class Author(models.Model):
-    user = models.OneToOneField(User,
+    id_user = models.OneToOneField(User,
                                 on_delete=models.CASCADE)
     rating = models.IntegerField(default=0)
 
     def update_rating(self):
-        sum_posts_rating = self.Post_set.all().aggregate(sum_rating=sum('rating')*3)['sum_rating']
-        sum_comments = self.user.Comment_set.all().aggregate(sum_rating=sum('comment_rating'))['sum_rating']
-        sum_comments_post = self.user.Post_set.Comment_set.all().aggregate(sum_rating=sum('comment_rating'))['sum_rating']
+        sum_posts_rating = self.post_set.all().aggregate(Sum('post_rating'))['post_rating__sum']*3
+        sum_comments = self.user.comment_set.all().aggregate(Sum('comment_rating'))['comment_rating__sum']
+        sum_comments_post = self.user.post_set.comment_set.all().aggregate(Sum('Comment__comment_rating'))['Comment__sum_rating__sum']
         result_rating = sum_posts_rating + sum_comments + sum_comments_post
         self.save()
 
@@ -20,29 +21,28 @@ class Category(models.Model):
 
 
 class Post(models.Model):
-    news = 'NS'
-    article = 'AR'
+
     TYPE = [
-        (news, 'Новости'),
-        (article, 'Статья'),
+        ('news', 'Новости'),
+        ('article', 'Статья'),
     ]
 
     author = models.ForeignKey(Author, on_delete=models.CASCADE)
-    type_of_post = models.CharField(max_length=2,
+    type_of_post = models.CharField(max_length=1,
                                     choices=TYPE,
-                                    default=news)
+                                    default='news')
     date_time = models.DateTimeField(auto_now_add=True)
     category = models.ManyToManyField(Category, through='PostCategory')
     header = models.CharField(max_length=255)
     text = models.TextField(default='Здесь должен быть текст статьи/новости')
-    rating = models.IntegerField(default=0)
+    post_rating = models.IntegerField(default=0)
 
     def like(self):
-        self.rating += 1
+        self.post_rating += 1
         self.save()
 
     def dislike(self):
-        self.rating -= 1
+        self.post_rating -= 1
         self.save()
 
     def preview(self):
