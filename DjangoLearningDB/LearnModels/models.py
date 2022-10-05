@@ -4,15 +4,15 @@ from django.db.models import Sum
 
 
 class Author(models.Model):
-    id_user = models.OneToOneField(User,
-                                on_delete=models.CASCADE)
+    id_user = models.OneToOneField(User, on_delete=models.CASCADE)
     rating = models.IntegerField(default=0)
 
     def update_rating(self):
         sum_posts_rating = self.post_set.all().aggregate(Sum('post_rating'))['post_rating__sum']*3
-        sum_comments = self.user.comment_set.all().aggregate(Sum('comment_rating'))['comment_rating__sum']
-        sum_comments_post = self.user.post_set.comment_set.all().aggregate(Sum('Comment__comment_rating'))['Comment__sum_rating__sum']
-        result_rating = sum_posts_rating + sum_comments + sum_comments_post
+        sum_comments = self.id_user.comment_set.all().aggregate(Sum('comment_rating'))['comment_rating__sum']
+        sum_comments_post = self.post_set.all().aggregate(Sum('comment__comment_rating'))['comment__comment_rating__sum']
+        #result_rating
+        self.rating = sum_posts_rating + sum_comments + sum_comments_post
         self.save()
 
 
@@ -28,7 +28,7 @@ class Post(models.Model):
     ]
 
     author = models.ForeignKey(Author, on_delete=models.CASCADE)
-    type_of_post = models.CharField(max_length=1,
+    type_of_post = models.CharField(max_length=10,
                                     choices=TYPE,
                                     default='news')
     date_time = models.DateTimeField(auto_now_add=True)

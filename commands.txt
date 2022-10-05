@@ -1,6 +1,6 @@
 >>> from django.db.models import Sum
->>> from LearnModels.models import Author, Category, Post, Comment
->>> from django.contrib.auth.models import User
+from LearnModels.models import Author, Category, Post, Comment
+from django.contrib.auth.models import User
 
 #создаём пользователей
 >>> User.objects.create_user('User1')
@@ -37,4 +37,55 @@
 >>> Post.objects.get(id = 2).category.add(Category.objects.get(id = 3))
 >>> Post.objects.get(id = 3).category.add(Category.objects.get(id = 4))
 >>> Post.objects.get(id = 3).category.add(Category.objects.get(id = 3))
+
+>>> post1 = Post.objects.get(id = 1)
+>>> post2 = Post.objects.get(id = 2)
+>>> post3 = Post.objects.get(id = 3)
+
+>>> user1 = User.objects.get(id = 2)
+>>> user2 = User.objects.get(id = 3)
+
+Оставляем комментарии
+>>> Comment.objects.create(post_id = post1.id,
+                            user_id = user1.id,
+                            comment_text = 'Какой крутой пост',)
+>>>Comment.objects.create(post_id = post2.id,
+                            user_id = user2.id,
+                            comment_text = 'Эта новость мне не понравилась',)
+>>>Comment.objects.create(post_id = post3.id,
+                            user_id = user1.id,
+                            comment_text = 'Ух ты как здорово',)
+>>>Comment.objects.create(post_id = post1.id,
+                            user_id = user2.id,
+                            comment_text = 'Это уже слишком, Ассуждаю',)
+
+
+>>> a = Comment.objects.get(id = 1)
+>>> a.like()
+>>> Comment.objects.get(id = 1).dislike()
+>>> Comment.objects.get(id = 3).like()
+
+>>> Author.objects.get(pk=1).update_rating()
+>>> Author.objects.get(pk=2).update_rating()
+>>> Author.objects.get(pk=1).rating
+44
+>>> Author.objects.get(pk=2).rating
+19
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
