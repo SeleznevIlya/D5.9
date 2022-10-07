@@ -2,17 +2,23 @@
 from LearnModels.models import Author, Category, Post, Comment
 from django.contrib.auth.models import User
 
-#создаём пользователей
+1)#создаём пользователей
 >>> User.objects.create_user('User1')
 >>> User.objects.create_user('User2')
 
-Присваиваем авторов пользователям
+2)Присваиваем авторов пользователям
 >>> a = User.objects.get(username = 'User1')
 >>> Author.objects.create(id_user = a.id)
 >>> Author.objects.get(id=1).id_user_id
 >>> Author.objects.create(id_user = 3)
 
-Создаём посты
+3)Создаём категории
+>>> Category.objects.create(name='Политика')
+>>> Category.objects.create(name='Спорт')
+>>> Category.objects.create(name='Животные')
+>>> Category.objects.create(name='Юмор')
+
+4)Создаём посты
 >>> b = Author.objects.get(id = a.id)
 >>> Post.objects.create(author_id = 2,
                         type_of_post = 'article',
@@ -27,7 +33,7 @@ from django.contrib.auth.models import User
                         header = 'Депутат Госдумы Валерий Рашкин приговорен к трем годам условно за то что гладил лося',
                         )
 
-Присваиваем постам категории
+5)Присваиваем постам категории
 >>> cat1 = Category.objects.get(id = 2)
 >>> post1 = Post.objects.get(id = 1)
 >>> post1.category.add(cat1)
@@ -45,7 +51,7 @@ from django.contrib.auth.models import User
 >>> user1 = User.objects.get(id = 2)
 >>> user2 = User.objects.get(id = 3)
 
-Оставляем комментарии
+6) Оставляем комментарии
 >>> Comment.objects.create(post_id = post1.id,
                             user_id = user1.id,
                             comment_text = 'Какой крутой пост',)
@@ -59,12 +65,13 @@ from django.contrib.auth.models import User
                             user_id = user2.id,
                             comment_text = 'Это уже слишком, Ассуждаю',)
 
-
+7) Применяем like/dislike
 >>> a = Comment.objects.get(id = 1)
 >>> a.like()
 >>> Comment.objects.get(id = 1).dislike()
 >>> Comment.objects.get(id = 3).like()
 
+8) Обновляем рейтинги пользователей
 >>> Author.objects.get(pk=1).update_rating()
 >>> Author.objects.get(pk=2).update_rating()
 >>> Author.objects.get(pk=1).rating
@@ -73,10 +80,17 @@ from django.contrib.auth.models import User
 19
 
 
+9)#получаем юзернейм автора с наибольшим рейтингом
+>>> a = Author.objects.order_by('-rating').values('id_user')[0]['id_user']
+>>> User.objects.get(id = a)
 
 
+10) Выводим лучшую статью, основываясь на like/dislike
+>>> Post.objects.order_by('-post_rating').values('author__id_user_id__username', 'post_rating', 'header', 'text', 'date_time')[0]
 
-
+11) Выводим комментарии лучшей статьи
+>>> a = Post.objects.values('pk').order_by('-post_rating')[0]['pk']
+>>> Comment.objects.values('comment_text').filter(post_id = a)
 
 
 
