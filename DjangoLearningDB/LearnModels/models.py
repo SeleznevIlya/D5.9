@@ -15,9 +15,15 @@ class Author(models.Model):
         self.rating = sum_posts_rating + sum_comments + sum_comments_post
         self.save()
 
+    def __str__(self):
+        return f'{self.id_user.username}'
+
 
 class Category(models.Model):
     category_name = models.CharField(max_length=255, unique=True)
+
+    def __str__(self):
+        return f'{self.category_name}'
 
 
 class Post(models.Model):
@@ -48,6 +54,9 @@ class Post(models.Model):
     def preview(self):
         return f'{self.text[:124]}...'
 
+    def __str__(self):
+        return f'{self.header.title()}'
+
 
 class PostCategory(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
@@ -68,3 +77,6 @@ class Comment(models.Model):
     def dislike(self):
         self.comment_rating -= 1
         self.save()
+
+    def __str__(self):
+        return f'{self.user}: {self.comment_text[:20]}'

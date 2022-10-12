@@ -92,7 +92,40 @@ from django.contrib.auth.models import User
 >>> a = Post.objects.values('pk').order_by('-post_rating')[0]['pk']
 >>> Comment.objects.values('comment_text').filter(post_id = a)
 
+____________________________
 
+{% load custom_filters %}
+{% load custom_tags %}
+
+
+{% block content %}
+    <h1>Все посты</h1>
+    <hr>
+    {% if posts %}
+        <table>
+            <tr>
+                <td>Автор</td>
+                <td>Заголовок</td>
+                <td>Текст</td>
+                <td>Категория</td>
+                <td>Дата</td>
+            </tr>
+            {% for post in posts %}
+            <tr>
+                <td>{{post.author}}</td>
+                <td>{{product.description|truncatewords:2}}</td>
+                <td>{{product.quantity}}</td>
+                <td>{{product.price|currency:'usd'}}</td>
+                <td>{{product.category.name}}</td>
+            </tr>
+            {% endfor %}
+
+        </table>
+
+    {% else %}
+        <h2>Постов нет!</h2>
+    {% endif %}
+{% endblock content %}
 
 
 
