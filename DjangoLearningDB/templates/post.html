@@ -1,10 +1,27 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'flatpages/default.html' %}
 
-</body>
-</html>
+
+{% block title %}
+Post
+
+{% endblock title %}
+
+{% block content %}
+
+<table>
+            <tr>
+                <td>Заголовок</td>
+                <td>Текст</td>
+                <td>Дата</td>
+            </tr>
+
+            <tr>
+                <td>{{post.header}}</td>
+                <td>{{post.text}}</td>
+                <td>{{post.date_time|date:'d M Y'}}</td>
+            </tr>
+
+
+        </table>
+
+{% endblock content %}
