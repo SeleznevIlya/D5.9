@@ -11,6 +11,8 @@ class PostList(ListView):
 
     context_object_name = 'posts'
 
+    paginate_by = 10
+
 
 class DetailPost(DetailView):
     model = Post
