@@ -8,7 +8,7 @@ class PostFilter(FilterSet):
         model = Post
 
         fields ={
-            'author': ['self.id_user.username__icontains'],
+            'author__id_user_id__username': ['icontains'],
             'header': '',
             'date_time': ['gt']
         }

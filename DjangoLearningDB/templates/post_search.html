@@ -1,10 +1,12 @@
 {% extends 'flatpages/default.html' %}
 
-<h1>Поиск новостей</h1>
-<hr>
+{% load custom_tags %}
+
+
 
 {% block content %}
-
+<h1>Поиск новостей</h1>
+<hr>
 <form action="" method="get">
     {{ filterset.form.as_p }}
     <input type="submit" value="Найти">
