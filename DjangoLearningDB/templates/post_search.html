@@ -1,0 +1,16 @@
+{% extends 'flatpages/default.html' %}
+
+<h1>Поиск новостей</h1>
+<hr>
+
+{% block content %}
+
+<form action="" method="get">
+    {{ filterset.form.as_p }}
+    <input type="submit" value="Найти">
+</form>
+{% endblock content %}
+
+
+
+
