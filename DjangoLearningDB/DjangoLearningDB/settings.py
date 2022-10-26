@@ -137,3 +137,4 @@ STATICFILES_URLS = [
     BASE_DIR / "static"
 ]
 
+LOGIN_URL = "/posts/"
