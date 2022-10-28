@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'django_filters',
     
     'LearnModels',
+    'sign',
+
 
 ]
 
@@ -137,4 +139,5 @@ STATICFILES_URLS = [
     BASE_DIR / "static"
 ]
 
-LOGIN_URL = "/posts/"
+LOGIN_URL = "/sign/login"
+LOGIN_REDIRECT_URL = "/posts"

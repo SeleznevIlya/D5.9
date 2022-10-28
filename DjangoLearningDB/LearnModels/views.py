@@ -8,7 +8,7 @@ from .models import Post
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
 
-class PostList(ListView):
+class PostList(LoginRequiredMixin, ListView):
     model = Post
     ordering = '-date_time'
 
@@ -30,7 +30,7 @@ class PostList(ListView):
         return context
 
 
-class DetailPost(DetailView):
+class DetailPost(LoginRequiredMixin, DetailView):
     model = Post
     template_name = 'post.html'
     context_object_name = 'post'
@@ -79,5 +79,10 @@ class NewsDelete(DeleteView):
     model = Post
     template_name = 'news_delete.html'
     success_url = reverse_lazy('post_list')
+
+
+
+
+
 
 
