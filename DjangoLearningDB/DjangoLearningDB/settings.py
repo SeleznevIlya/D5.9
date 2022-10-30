@@ -38,12 +38,17 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+
     'django.contrib.sites',
     'django.contrib.flatpages',
     'django_filters',
     
     'LearnModels',
     'sign',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google'
 
 
 ]
@@ -73,9 +78,15 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.request'
             ],
         },
     },
+]
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
 WSGI_APPLICATION = 'DjangoLearningDB.wsgi.application'
@@ -139,5 +150,11 @@ STATICFILES_URLS = [
     BASE_DIR / "static"
 ]
 
-LOGIN_URL = "/sign/login"
+LOGIN_URL = "/account/login"
 LOGIN_REDIRECT_URL = "/posts"
+
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_VERIFICATION = 'none'
