@@ -44,11 +44,10 @@ INSTALLED_APPS = [
     'django_filters',
     
     'LearnModels',
-    'sign',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'allauth.socialaccount.providers.google'
+    'allauth.socialaccount.providers.google',
 
 
 ]
