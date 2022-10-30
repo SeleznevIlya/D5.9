@@ -33,6 +33,7 @@ class PostForm(forms.ModelForm):
             })
         return cleaned_data
 
+
 class BasicSignupForm(SignupForm):
 
     def save(self, request):

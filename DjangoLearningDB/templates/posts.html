@@ -11,7 +11,9 @@ Posts
 {% block content %}
     <h1>Все посты</h1>
     <hr>
-
+    {% if is_not_author %}
+        <button> <a href="/posts/upgrade"> Хочу стать автором</a> </button>
+    {% endif %}
     {% if posts %}
         <table>
             <tr>
@@ -53,5 +55,9 @@ Posts
     {% endif %}
 
 <button><a href="/account/logout/">Выйти</a></button>
+{% if is_not_author %}
+    <button> <a href="/posts/upgrade"> Хочу стать автором</a> </button>
+{% endif %}
+
 
 {% endblock content %}
