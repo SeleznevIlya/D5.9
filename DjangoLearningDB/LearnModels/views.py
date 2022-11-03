@@ -1,14 +1,16 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.shortcuts import render
+from django.shortcuts import render, reverse, redirect
+from django.template.loader import render_to_string
 from django.urls import reverse_lazy
-
+from django.views import View
 from .filters import PostFilter
 from .forms import PostForm
-from .models import Post
+from .models import Post, Subscribers
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from django.shortcuts import redirect
 from django.contrib.auth.models import Group
 from django.contrib.auth.decorators import login_required
+from django.core.mail import send_mail
+
 
 class PostList(LoginRequiredMixin, ListView):
     model = Post
@@ -95,6 +97,21 @@ def upgrage_me(request):
     return redirect('/posts/')
 
 
+class SubscribersView(View):
+    def get(self, request, *args, **kwargs):
+        return render(request, 'subscribe_created.html', {})
+
+    def post(self, request, *args, **kwargs):
+        subscribe = Subscribers(
+            user=request.POST['user'],
+            category=request.POST['category'],
+        )
+        subscribe.save()
 
 
 
+        send_mail(
+            subject=f"{Post.objects.get('header')}",
+            message=f"{Post.objects.get('text')[:50]}"
+        )
+        return redirect('/posts/')

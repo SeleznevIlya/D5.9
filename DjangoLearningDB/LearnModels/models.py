@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import Sum
 from django.urls import reverse
+from django.conf import settings
 
 
 class Author(models.Model):
@@ -22,9 +23,15 @@ class Author(models.Model):
 
 class Category(models.Model):
     category_name = models.CharField(max_length=255, unique=True)
+    subscribers = models.ManyToManyField(settings.AUTH_USER_MODEL, through='Subscribers')
 
     def __str__(self):
         return f'{self.category_name}'
+
+
+class Subscribers(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
 
 
 class Post(models.Model):
@@ -84,3 +91,6 @@ class Comment(models.Model):
 
     def __str__(self):
         return f'{self.user}: {self.comment_text[:20]}'
+
+
+
