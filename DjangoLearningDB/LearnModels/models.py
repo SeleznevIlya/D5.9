@@ -23,7 +23,7 @@ class Author(models.Model):
 
 class Category(models.Model):
     category_name = models.CharField(max_length=255, unique=True)
-    subscribers = models.ManyToManyField(settings.AUTH_USER_MODEL, through='Subscribers')
+    subscriber = models.ManyToManyField(settings.AUTH_USER_MODEL, through='Subscribers')
 
     def __str__(self):
         return f'{self.category_name}'

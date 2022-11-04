@@ -14,6 +14,19 @@ Posts
     {% if is_not_author %}
         <button> <a href="/posts/upgrade"> Стать автором</a> </button>
     {% endif %}
+    <div class="col">
+       <div class="post">
+           <a href="/posts" title="разделы новостей">Категории:</a> |
+           {% for c in get_category %}
+                <a href="?category={{c.id}}"
+                {% if request.GET.category == c.id|title %}
+                    class="bold"
+                {% endif %}
+                >{{ c.category_name }}</a> |
+           {% endfor %}
+    {% if request.user.username and request.GET.category %}
+               <br><a href="/posts/subscribes/{{request.GET.category}}"><b>Подписаться на новости раздела</b></a>
+    {% endif%}
     {% if posts %}
         <table>
             <tr>

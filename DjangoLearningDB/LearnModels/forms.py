@@ -1,4 +1,4 @@
-from .models import Post
+from .models import Post, Category
 from django import forms
 from django.core.exceptions import ValidationError
 from allauth.account.forms import SignupForm
@@ -8,6 +8,12 @@ from django.contrib.auth.models import Group
 class PostForm(forms.ModelForm):
     text = forms.CharField(min_length=50, )
     header = forms.CharField(min_length=5)
+
+    # category = forms.ModelMultipleChoiceField(
+    #     label='Категория',
+    #     queryset=Category.objects.order_by('category_name').all(),
+    #     widget=forms.CheckboxSelectMultiple
+    # )
     class Meta:
         model = Post
         fields = ['category', 'header', 'text', 'author'

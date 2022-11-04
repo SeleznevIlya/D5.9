@@ -1,15 +1,18 @@
+import os
+
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, reverse, redirect
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.views import View
 from .filters import PostFilter
 from .forms import PostForm
-from .models import Post, Subscribers
+from .models import Post, Subscribers, Category
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group, User
 from django.contrib.auth.decorators import login_required
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMultiAlternatives
 
 
 class PostList(LoginRequiredMixin, ListView):
@@ -32,6 +35,7 @@ class PostList(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['filterset'] = self.filterset
         context['is_not_author'] = not self.request.user.groups.filter(name='authors').exists()
+        context['get_category'] = Category.objects.all()
         return context
 
 
@@ -71,8 +75,44 @@ class NewsCreate(PermissionRequiredMixin, CreateView):
                 post.type_of_post = 'news'
             else:
                 post.type_of_post = 'articles'
+        post.save()
+        return super().form_valid(form)
 
-            return super().form_valid(form)
+    def post(self, request, *args, **kwargs):
+        post = Post(
+            header = request.POST['header'],
+            text=request.POST['text'],
+            author_id=request.POST['author'],
+            #category=request.POST['category']
+        )
+        post.save()
+
+        primary_key = post.pk
+        post_ = Post.objects.get(pk=primary_key)
+        subscribers_list = []
+        for category in post_.category.all():
+            for user in category.user.all():
+                if user not in subscribers_list:
+                    subscribers_list.append(user)
+
+        html_content = render_to_string(
+            'subscribe_created.html',
+            {
+                'subscribe': post
+            }
+        )
+
+        msg = EmailMultiAlternatives(
+            subject=f'{post.header}',
+            body=post.text,
+            from_email=os.getenv('EMAIL_GOOGLE_FULL'),
+            #from_email='seleznev.ilya.a@gmail.com',
+            to=['helfik123_1998@mail.ru', ],
+        )
+
+        msg.attach_alternative(html_content, "text/html")
+        msg.send()
+        return redirect('/posts/')
 
 
 class NewsEdit(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
@@ -96,22 +136,9 @@ def upgrage_me(request):
         author_group.user_set.add(user)
     return redirect('/posts/')
 
-
-class SubscribersView(View):
-    def get(self, request, *args, **kwargs):
-        return render(request, 'subscribe_created.html', {})
-
-    def post(self, request, *args, **kwargs):
-        subscribe = Subscribers(
-            user=request.POST['user'],
-            category=request.POST['category'],
-        )
-        subscribe.save()
-
-
-
-        send_mail(
-            subject=f"{Post.objects.get('header')}",
-            message=f"{Post.objects.get('text')[:50]}"
-        )
-        return redirect('/posts/')
+def subscribes(request, i):
+    user = User.objects.get(username=request.user)
+    if user:
+        cat1 = Category.objects.get(pk=i)
+        cat1.subscriber.add(user)
+    return redirect('/posts/')
