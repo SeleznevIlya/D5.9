@@ -87,18 +87,22 @@ class NewsCreate(PermissionRequiredMixin, CreateView):
         )
         post.save()
 
-        primary_key = post.pk
-        post_ = Post.objects.get(pk=primary_key)
-        subscribers_list = []
-        for category in post_.category.all():
-            for user in category.user.all():
-                if user not in subscribers_list:
-                    subscribers_list.append(user)
-
+        # primary_key = post.pk
+        # print(primary_key)
+        # post_ = Post.objects.get(pk=primary_key)
+        # print(post_)
+        # subscribers_list = []
+        # for category in post_.category.all():
+        #     print(category)
+        #     for user_email in category.subscriber.all().values('email'):
+        #         print(user_email['email'])
+        #         if user_email['email'] not in subscribers_list:
+        #             subscribers_list.append(user_email['email'])
+        # print(subscribers_list)
         html_content = render_to_string(
             'subscribe_created.html',
             {
-                'subscribe': post
+                'post': post
             }
         )
 
@@ -106,7 +110,7 @@ class NewsCreate(PermissionRequiredMixin, CreateView):
             subject=f'{post.header}',
             body=post.text,
             from_email=os.getenv('EMAIL_GOOGLE_FULL'),
-            #from_email='seleznev.ilya.a@gmail.com',
+
             to=['helfik123_1998@mail.ru', ],
         )
 
