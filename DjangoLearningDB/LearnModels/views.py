@@ -74,7 +74,7 @@ class NewsCreate(PermissionRequiredMixin, CreateView):
         current_day = datetime.now().date()
         count_ = Post.objects.filter(author_id=post.author_id, date_time__gte=current_day).count()
 
-        if count_ < 3:
+        if count_ < 100:
             if self.request.method == 'POST':
                 if self.request.path == '/posts/news/create/':
                     post.type_of_post = 'news'
