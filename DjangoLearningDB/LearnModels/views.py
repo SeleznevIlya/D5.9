@@ -1,5 +1,5 @@
+from datetime import datetime
 import os
-
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, reverse, redirect
@@ -13,6 +13,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from django.contrib.auth.models import Group, User
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail, EmailMultiAlternatives
+from .tasks import send_message
 
 
 class PostList(LoginRequiredMixin, ListView):
@@ -70,53 +71,29 @@ class NewsCreate(PermissionRequiredMixin, CreateView):
 
     def form_valid(self, form):
         post = form.save(commit=False)
-        if self.request.method == 'POST':
-            if self.request.path == '/posts/news/create/':
-                post.type_of_post = 'news'
-            else:
-                post.type_of_post = 'articles'
-        post.save()
-        return super().form_valid(form)
+        current_day = datetime.now().date()
+        count_ = Post.objects.filter(author_id=post.author_id, date_time__gte=current_day).count()
 
-    def post(self, request, *args, **kwargs):
-        post = Post(
-            header = request.POST['header'],
-            text=request.POST['text'],
-            author_id=request.POST['author'],
-            #category=request.POST['category']
-        )
-        post.save()
+        if count_ < 3:
+            if self.request.method == 'POST':
+                if self.request.path == '/posts/news/create/':
+                    post.type_of_post = 'news'
+                else:
+                    post.type_of_post = 'articles'
+            post.save()
 
-        # primary_key = post.pk
-        # print(primary_key)
-        # post_ = Post.objects.get(pk=primary_key)
-        # print(post_)
-        # subscribers_list = []
-        # for category in post_.category.all():
-        #     print(category)
-        #     for user_email in category.subscriber.all().values('email'):
-        #         print(user_email['email'])
-        #         if user_email['email'] not in subscribers_list:
-        #             subscribers_list.append(user_email['email'])
-        # print(subscribers_list)
-        html_content = render_to_string(
-            'subscribe_created.html',
-            {
-                'post': post
-            }
-        )
+            category_id = self.request.POST.getlist('category')
 
-        msg = EmailMultiAlternatives(
-            subject=f'{post.header}',
-            body=post.text,
-            from_email=os.getenv('EMAIL_GOOGLE_FULL'),
-
-            to=['helfik123_1998@mail.ru', ],
-        )
-
-        msg.attach_alternative(html_content, "text/html")
-        msg.send()
-        return redirect('/posts/')
+            for i in category_id:
+                cat1 = Category.objects.get(pk=i)
+                post.category.add(cat1)
+            #try:
+            send_message(post.pk, category_id)
+            # except:
+            #     print('SendMailError')
+        else:
+            print('Не более 3х новостей в день')
+        return HttpResponseRedirect('/posts/')
 
 
 class NewsEdit(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
