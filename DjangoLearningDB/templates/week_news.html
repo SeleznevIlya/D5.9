@@ -11,10 +11,10 @@
             {% for post in posts %}
             <tr>
                 <td>
-                    <b>{{post.date_time}}</b> <a href="http://127.0.0.1/posts/{{post.id}}">{{post.header}}</a>
+                    <b>{{post.date_time}}</b> <a href="http://127.0.0.1:8000/posts/{{post.id}}">{{post.header}}</a>
                 </td>
             </tr>
-
+            {% endfor %}
 </table>
 </body>
 </html>

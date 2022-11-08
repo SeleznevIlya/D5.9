@@ -47,7 +47,7 @@ class Command(BaseCommand):
 
         scheduler.add_job(
             my_job,
-            trigger=CronTrigger(day_of_week="mon", hour="00", minute="00"),  # Рассылка в понедельник ночью
+            trigger=CronTrigger(day_of_week="tue", hour="08", minute="05"),  # Рассылка в понедельник ночью
             id="my_job",  # The `id` assigned to each job MUST be unique
             max_instances=1,
             replace_existing=True,

@@ -22,7 +22,7 @@ def send_message(pk_, id_categories_):
     msg = EmailMultiAlternatives(
         subject=f'{post.header}',
         body=post.text,
-        from_email=os.getenv('EMAIL_YANDEX_FULL'),
+        from_email=os.getenv('EMAIL_GOOGLE_FULL'),
         to=email_list,
     )
     msg.attach_alternative(html_content, "text/html")
@@ -56,7 +56,7 @@ def week_news():
             )
             msg = EmailMultiAlternatives(
                 subject="Новости за неделю",
-                from_email=os.getenv('EMAIL_YANDEX_FULL'),
+                from_email=os.getenv('EMAIL_GOOGLE_FULL'),
                 to=email_list,
             )
             msg.attach_alternative(html_content, "text/html")
