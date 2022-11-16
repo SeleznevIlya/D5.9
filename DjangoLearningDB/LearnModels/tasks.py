@@ -5,10 +5,17 @@ from .models import Post, User, Category, Subscribers
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from datetime import datetime, date, timedelta
+from celery import shared_task
+import time
 
 load_dotenv()
 
+@shared_task
+def hello():
+    time.sleep(10)
+    print('hello')
 
+@shared_task
 def send_message(pk_, id_categories_):
     post = Post.objects.get(id=pk_)
     emails = User.objects.filter(category__in=id_categories_).values('email').distinct()
@@ -28,7 +35,7 @@ def send_message(pk_, id_categories_):
     msg.attach_alternative(html_content, "text/html")
     msg.send()
 
-
+@shared_task
 def week_news():
     start = datetime.now() - timedelta(7)
     finish = datetime.now()
