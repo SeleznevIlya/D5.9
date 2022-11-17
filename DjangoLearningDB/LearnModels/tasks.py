@@ -10,10 +10,6 @@ import time
 
 load_dotenv()
 
-@shared_task
-def hello():
-    time.sleep(10)
-    print('hello')
 
 @shared_task
 def send_message(pk_, id_categories_):

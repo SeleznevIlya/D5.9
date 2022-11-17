@@ -88,7 +88,7 @@ class NewsCreate(PermissionRequiredMixin, CreateView):
                 cat1 = Category.objects.get(pk=i)
                 post.category.add(cat1)
             #try:
-            send_message(post.pk, category_id)
+            send_message.delay(post.pk, category_id)
             # except:
             #     print('SendMailError')
         else:
