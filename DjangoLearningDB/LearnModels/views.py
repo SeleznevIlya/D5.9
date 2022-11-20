@@ -14,7 +14,7 @@ from django.contrib.auth.models import Group, User
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail, EmailMultiAlternatives
 from .tasks import send_message
-
+from django.core.cache import cache
 
 class PostList(LoginRequiredMixin, ListView):
     model = Post
@@ -45,6 +45,12 @@ class DetailPost(LoginRequiredMixin, DetailView):
     template_name = 'post.html'
     context_object_name = 'post'
 
+    def get_object(self, *args, **kwargs):
+        obj = cache.get(f'post-{self.kwargs["pk"]}', None)
+        if not obj:
+            obj = super().get_object(queryset=self.queryset)
+            cache.set(f'post-{self.kwargs["pk"]}', obj)
+        return obj
 
 class SearchPost(ListView):
     model = Post
