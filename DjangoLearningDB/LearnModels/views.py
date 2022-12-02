@@ -52,6 +52,7 @@ class DetailPost(LoginRequiredMixin, DetailView):
             cache.set(f'post-{self.kwargs["pk"]}', obj)
         return obj
 
+
 class SearchPost(ListView):
     model = Post
     template_name = 'post_search.html'
