@@ -29,26 +29,28 @@ Posts
     {% if request.user.username and request.GET.category %}
                <br><a href="/posts/subscribes/{{request.GET.category}}"><b>Подписаться на новости раздела</b></a>
     {% endif%}
-    {% if posts %}
-        <table>
-            <tr>
-                <td>Заголовок</td>
-                <td>Текст</td>
-                <td>Дата</td>
-            </tr>
-            {% for post in posts %}
-            <tr>
-                <td>{{post.header}}</td>
-                <td>{{post.text|truncatechars:20}}</td>
-                <td>{{post.date_time}}</td>
-            </tr>
-            {% endfor %}
+    <!-- {% if posts %}-->
+    <table>
+        <tr>
+            <td>Заголовок</td>
+            <td>Текст</td>
+            <td>Дата</td>
+        </tr>
+        {% for post in posts %}
+        <tr class="{% cycle 'blue' 'white' %}">
+            <td>{{post.header}}</td>
+            <td>{{post.text|truncatechars:20}}</td>
+            <td>{{post.date_time}}</td>
+        </tr>
+        {% empty %}
+            <h2>Постов нет!</h2>
+        {% endfor %}
 
-        </table>
+    </table>
 
-    {% else %}
+    <!-- {% else %}
         <h2>Постов нет!</h2>
-    {% endif %}
+    {% endif %}-->
 
     <!-- Настраиваем пагинацию -->
     {% if page_obj.has_previous %}

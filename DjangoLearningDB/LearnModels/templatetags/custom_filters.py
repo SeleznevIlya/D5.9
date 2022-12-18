@@ -42,9 +42,9 @@ def censor(value: str) -> str:
         a = value
         for word in list(CURRENCY_WORDS.keys()):
             if word in a:
-                a = a.replace(word, f'{word[:1]}*****')
+                a = a.replace(word, f'{word[:1]}*****{word[-1:-2:-1]}')
             if word.capitalize() in a:
-                a = a.replace(word.capitalize(), f'{word[:1].capitalize()}*****')
+                a = a.replace(word.capitalize(), f'{word[:1].capitalize()}*****{word[-1:-2:-1].capitalize()}')
                 
         return a
         """Нашёл альтернативный способ как заменить слова в тексте.
