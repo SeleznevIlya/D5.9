@@ -13,7 +13,10 @@ import os
 import os.path
 from pathlib import Path
 from dotenv import load_dotenv
+import logging
 load_dotenv()
+
+logger = logging.getLogger('django')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -68,7 +71,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'LearnModels.config.SimpleMiddleware'
+    #'LearnModels.config.SimpleMiddleware'
 ]
 
 ROOT_URLCONF = 'DjangoLearningDB.urls'
@@ -203,7 +206,119 @@ CACHES = {
 }
 
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'style': '{',
+    'formatters': {
+        'simple': {
+            'format': '%(asctime)s %(levelname)s %(message)s',
+            'datefmt' : "%d/%b/%Y %H:%M:%S"
+        },
+        'simple_warning': {
+            'format': '%(levelname) %(acttime) %(message) %(pathname)'
+        },
+        'simple_error_critical': {
+            'format': '%(levelname) %(acttime) %(message) %(pathname) %(exc_info)'
+        },
+        'simple_general': {
+            'format': '%(levelname) %(acttime) %(message) %(module)'
+        },
+        'simple_errors': {
+            'format': '%(levelname) %(acttime) %(message) %(pathname) %(exc_info)'
+        },
+        'simple_security':{
+            'format': '%(levelname) %(acttime) %(message) %(module)'
+        },
+        'simple_mail_admins':{
+            'format': '%(levelname) %(acttime) %(message) %(pathname)'
+        }
 
+    },
+    'filters': {
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue'
+        },
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse'
+        }
 
+    },
+    'handler': {
+        'console': {
+            'level': 'INFO',
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple'
+        },
+        'console_warning': {
+            'level': 'WARNING',
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple_warning'
+        },
+        'console_error_critical':{
+            'level': 'ERROR',
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple_error_critical'
+        },
+        'general': {
+            'level': 'INFO',
+            'filters': ['require_debug_false'],
+            'class': 'logging.FileHandler',
+            'filename': 'general.log',
+            'formatter': 'simple_general'
+        },
+        'errors': {
+            'level': 'ERROR',
+            'filters': ['require_debug_false'],
+            'class': 'logging.FileHandler',
+            'filename': 'errors.log',
+            'formatter': 'simple_errors'
+        },
+        'security': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': 'security.log',
+            'formatter': 'simple_security'
+        },
+        'mail_admins': {
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler',
+            'formatter': 'simple_mail_admins'
+        }
 
+    },
+    'loggers': {
+        'django': {
+            'handler': ['console', 'console_warning', 'console_error_critical', 'general'],
+            'propagate': True
+        },
+        'django.request': {
+            'handler': ['errors', 'mail_admins'],
+            'propagate': True
+        },
+        'django.server': {
+            'handler': ['errors', 'mail_admins'],
+            'propagate': True
+        },
+        'django.template': {
+            'handler': ['errors'],
+            'propagate': True
+        },
+        'django.db.backends': {
+            'handler': ['errors'],
+            'propagate': True
+        },
+        'django.security': {
+            'handler': ['security'],
+            'propagate': True
+
+        }
+
+    },
+}
+
+#from django.utils.log import R
 

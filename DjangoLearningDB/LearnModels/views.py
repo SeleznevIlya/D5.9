@@ -1,7 +1,7 @@
 from datetime import datetime
 import os
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, reverse, redirect
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
@@ -15,6 +15,10 @@ from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail, EmailMultiAlternatives
 from .tasks import send_message
 from django.core.cache import cache
+import logging
+#from django.core.
+
+logger = logging.getLogger(__name__)
 
 class PostList(LoginRequiredMixin, ListView):
     model = Post
@@ -94,10 +98,10 @@ class NewsCreate(PermissionRequiredMixin, CreateView):
             for i in category_id:
                 cat1 = Category.objects.get(pk=i)
                 post.category.add(cat1)
-            #try:
-            send_message.delay(post.pk, category_id)
-            # except:
-            #     print('SendMailError')
+            try:
+                send_message.delay(post.pk, category_id)
+            except:
+                 logger.error('error_cant send message')
         else:
             print('Не более 3х новостей в день')
         return HttpResponseRedirect('/posts/')
@@ -130,3 +134,11 @@ def subscribes(request, i):
         cat1 = Category.objects.get(pk=i)
         cat1.subscriber.add(user)
     return redirect('/posts/')
+
+
+
+# def tmp_view(request):
+#     logger.warning('hello')
+#     return JsonResponse({'success': True})
+
+
