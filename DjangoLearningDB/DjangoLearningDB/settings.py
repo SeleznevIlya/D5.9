@@ -322,5 +322,4 @@ LOGGING = {
     },
 }
 
-#from django.utils.log import R
 

@@ -16,9 +16,9 @@ from django.core.mail import send_mail, EmailMultiAlternatives
 from .tasks import send_message
 from django.core.cache import cache
 import logging
-#from django.core.
 
 logger = logging.getLogger(__name__)
+
 
 class PostList(LoginRequiredMixin, ListView):
     model = Post
