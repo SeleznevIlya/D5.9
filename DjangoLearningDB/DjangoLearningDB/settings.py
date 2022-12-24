@@ -213,7 +213,7 @@ LOGGING = {
     'formatters': {
         'simple': {
             'format': '%(asctime)s %(levelname)s %(message)s',
-            'datefmt' : "%d/%b/%Y %H:%M:%S"
+            'datefmt': "%d/%b/%Y %H:%M:%S"
         },
         'simple_warning': {
             'format': '%(levelname) %(acttime) %(message) %(pathname)'
@@ -246,7 +246,7 @@ LOGGING = {
     },
     'handler': {
         'console': {
-            'level': 'INFO',
+            'level': 'DEBUG',
             'filters': ['require_debug_true'],
             'class': 'logging.StreamHandler',
             'formatter': 'simple'
@@ -257,7 +257,7 @@ LOGGING = {
             'class': 'logging.StreamHandler',
             'formatter': 'simple_warning'
         },
-        'console_error_critical':{
+        'console_error_critical': {
             'level': 'ERROR',
             'filters': ['require_debug_true'],
             'class': 'logging.StreamHandler',
@@ -279,12 +279,14 @@ LOGGING = {
         },
         'security': {
             'level': 'INFO',
+            'filters': ['require_debug_false'],
             'class': 'logging.FileHandler',
             'filename': 'security.log',
             'formatter': 'simple_security'
         },
         'mail_admins': {
             'level': 'ERROR',
+            'filters': ['require_debug_false'],
             'class': 'django.utils.log.AdminEmailHandler',
             'formatter': 'simple_mail_admins'
         }
